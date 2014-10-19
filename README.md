@@ -19,4 +19,4 @@ A listagem, actualizada diariamente, pode ser consultada através dos serviços 
 
   * [Morph.io](https://api.morph.io/TMMV/obitos_em_portugal_morphio/data.json?key=lER59PqrGuk1%2F46quHIE&query=select%20*%20from%20%27data%27)
 
-Este serviço utiliza um script que grava os dados numa base de dados sqlite. Esse script pode ser encontrado [aqui](https://github.com/TMMV/obitos_em_portugal_morphio).
+Este serviço utiliza um versão do script que grava os dados numa base de dados sqlite. Esse script pode ser encontrado [aqui](https://github.com/TMMV/obitos_em_portugal_morphio).
