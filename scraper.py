@@ -104,8 +104,8 @@ def cyclicGet( response ):
         else:
             year = int(date[2])
             month = int(monthNumber(date[0]))
-            day = numeroDias + 1 - day
-            datestr = "%d-%02d-%02d" % (year, month, day)
+            daynumber = numeroDias + 1 - day
+            datestr = "%d-%02d-%02d" % (year, month, daynumber)
             document.write(datestr + ','
                  + numObitosCausaNaturalArray[numeroDias-day] + ','
                  + numObitosCausaNaoNaturalArray[numeroDias-day] + ','
