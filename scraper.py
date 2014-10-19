@@ -3,7 +3,23 @@ from BeautifulSoup import BeautifulSoup
 from urllib2 import Request, build_opener, HTTPCookieProcessor, HTTPHandler
 import cookielib
 
-NUMBER_OF_MONTHS = 30
+
+def monthNumber(monthName):
+    return {
+        'Janeiro': '1',
+        'Fevereiro': '2',
+        'Mar&ccedil;o': '3',
+        'Abril': '4',
+        'Maio': '5',
+        'Junho': '6',
+        'Julho': '7',
+        'Agosto': '8',
+        'Setembro': '9',
+        'Outubro': '10',
+        'Novembro': '11',
+        'December': '12',
+    }[monthName]
+
 timeout = 20
 socket.setdefaulttimeout(timeout)
 class MyHTTPErrorProcessor(urllib2.HTTPErrorProcessor):
@@ -11,7 +27,6 @@ class MyHTTPErrorProcessor(urllib2.HTTPErrorProcessor):
     def http_response(self, request, response):
         code, msg, hdrs = response.code, response.msg, response.info()
 
-        # only add this line to stop 302 redirection.
         if code == 302:
             return response
 
@@ -31,15 +46,8 @@ urllib2.install_opener(opener)
 '''
 First we do a get,scan the page and create de csv files for the first month
 '''
-numObitosCausaNaturalf = open('numObitosCausaNatural.csv', 'w')
-numObitosCausaNaoNaturalf = open('numObitosCausaNaoNatural.csv', 'w')
-numObitosSujeitoInvestigacaof = open('numObitosSujeitoInvestigacao.csv', 'w')
-numAcidenteTrabalhof = open('numAcidenteTrabalho.csv', 'w')
-numAcidenteTransitof = open('numAcidenteTransito.csv', 'w')
-numEventualSuicidiof = open('numEventualSuicidio.csv', 'w')
-numEventualHomicidiof = open('numEventualHomicidio.csv', 'w')
-numOutrosAcidentesf = open('numOutrosAcidentes.csv', 'w')
-numIgnoradof = open('numIgnorado.csv', 'w')
+document = open('data/obitos.csv', 'w')
+document.write('data,numObitosCausaNatural,numObitosCausaNaoNatural,numObitosSujeitoInvestigacao,numAcidenteTrabalho,numAcidenteTransito,numEventualSuicidio,numEventualHomicidio,numOutrosAcidentes,numIgnorado')
 
 req = urllib2.Request('https://servicos.min-saude.pt/sico/faces/estatisticas.jsp')
 req.add_header('Accept-Encoding',"gzip, deflate")
@@ -75,16 +83,29 @@ def cyclicGet( response ):
     obitosSemanaInfo = soup.find('input', {'id':'columnInfoTotal'}).get('value')
     obitosDiarioInfo = soup.find('input', {'id':'obitosDiarioInfo'}).get('value')
     month = soup.find('span', {'class':'tituloMes'}).text
+    # separar o mes do ano Outubro - 2014
+    date = month.split()
 
-    numObitosCausaNaturalf.write(month+','+numObitosCausaNatural.replace(" ", ",")+'\n')
-    numObitosCausaNaoNaturalf.write(month+','+numObitosCausaNaoNatural.replace(" ", ",")+'\n')
-    numObitosSujeitoInvestigacaof.write(month+','+numObitosSujeitoInvestigacao.replace(" ", ",")+'\n')
-    numAcidenteTrabalhof.write(month+','+numAcidenteTrabalho.replace(" ", ",")+'\n')
-    numAcidenteTransitof.write(month+','+numAcidenteTransito.replace(" ", ",")+'\n')
-    numEventualSuicidiof.write(month+','+numEventualSuicidio.replace(" ", ",")+'\n')
-    numEventualHomicidiof.write(month+','+numEventualHomicidio.replace(" ", ",")+'\n')
-    numOutrosAcidentesf.write(month+','+numOutrosAcidentes.replace(" ", ",")+'\n')
-    numIgnoradof.write(month+','+numIgnorado.replace(" ", ",")+'\n')
+    numObitosCausaNaturalArray = numObitosCausaNatural.split()
+    numObitosCausaNaoNaturalArray = numObitosCausaNaoNatural.split()
+    numObitosSujeitoInvestigacaoArray = numObitosSujeitoInvestigacao.split()
+    numAcidenteTrabalhoArray = numAcidenteTrabalho.split()
+    numAcidenteTransitoArray = numAcidenteTransito.split()
+    numEventualSuicidioArray = numEventualSuicidio.split()
+    numEventualHomicidioArray = numEventualHomicidio.split()
+    numOutrosAcidentesArray = numOutrosAcidentes.split()
+    numIgnoradoArray = numIgnorado.split()
+
+    count = 0
+    numeroDias = len(numObitosCausaNaturalArray)
+    for day in range(1,numeroDias+1):
+        if numObitosCausaNaturalArray[numeroDias-day]=='0':
+            count+=1
+        else:
+            document.write(date[2]+"-"+monthNumber(date[0])+'-'+str(numeroDias+1-day)+','+numObitosCausaNaturalArray[numeroDias-day]+','+numObitosCausaNaoNaturalArray[numeroDias-day]+','+numObitosSujeitoInvestigacaoArray[numeroDias-day]+','+numAcidenteTrabalhoArray[numeroDias-day]+','+numAcidenteTransitoArray[numeroDias-day]+','+numEventualSuicidioArray[numeroDias-day]+','+numEventualHomicidioArray[numeroDias-day]+','+numOutrosAcidentesArray[numeroDias-day]+','+numIgnoradoArray[numeroDias-day]+'\n')
+
+    if count == numeroDias:
+        return
 
     # ------------------------- post ----------------------
     '''
@@ -131,15 +152,7 @@ while True:
     print "iteration",i
     response = cyclicGet(response)
     i+=1
-    if not response or i >NUMBER_OF_MONTHS:
+    if not response:
         break
 
-numObitosCausaNaturalf.close()
-numObitosCausaNaoNaturalf.close()
-numObitosSujeitoInvestigacaof.close()
-numAcidenteTrabalhof.close()
-numAcidenteTransitof.close()
-numEventualSuicidiof.close()
-numEventualHomicidiof.close()
-numOutrosAcidentesf.close()
-numIgnoradof.close()
+document.close()
