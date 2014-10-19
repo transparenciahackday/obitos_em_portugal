@@ -102,7 +102,11 @@ def cyclicGet( response ):
         if numObitosCausaNaturalArray[numeroDias-day] == '0':
             count += 1
         else:
-            document.write(date[2] + "-" + monthNumber(date[0]) + '-' + str(numeroDias + 1 - day) + ','
+            year = int(date[2])
+            month = int(monthNumber(date[0]))
+            day = numeroDias + 1 - day
+            datestr = "%d-%02d-%02d" % (year, month, day)
+            document.write(datestr + ','
                  + numObitosCausaNaturalArray[numeroDias-day] + ','
                  + numObitosCausaNaoNaturalArray[numeroDias-day] + ','
                  + numObitosSujeitoInvestigacaoArray[numeroDias-day] + ','
