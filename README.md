@@ -12,3 +12,10 @@ Listagem dos óbitos registados em Portugal pelo Sistema de Informação dos Cer
 ##  Licença
 
 Presume-se que a informação aqui contida é de caráter público, e como tal ela é aqui republicada de acordo com os termos da PDDL (Licença de Base de Dados de Domínio Público).
+
+## Morph.io
+
+A listagem, actualizada diariamente, pode ser consultada através dos serviços forneçidos pelo Morph.io:
+
+  * [Morph.io](https://api.morph.io/TMMV/obitos_em_portugal_morphio/data.json?key=lER59PqrGuk1%2F46quHIE&query=select%20*%20from%20%27data%27
+)
